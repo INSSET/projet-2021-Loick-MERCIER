@@ -6,4 +6,30 @@
     <div class="mb-3">
         You are logged in as {{ app.user.username }}
     </div>
+    <div>
+        <div>
+            <h1>Notes</h1>
+            {% if notes %}
+                <ul>
+                    {% for note in notes %}
+                        <li><p>{{ note.text }}</p></li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Any note</p>
+            {% endif %}
+        </div>
+        <div>
+            <h1>Tasks</h1>
+            {% if tasks %}
+                <ul>
+                    {% for task in tasks %}
+                        <li><p>{{ task.text }}</p></li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Any task</p>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
