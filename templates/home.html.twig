@@ -8,15 +8,15 @@
     </div>
     <div>
         <div>
-            <h1>Notes</h1>
-            {% if notes %}
+            <h1>Customers</h1>
+            {% if customers %}
                 <ul>
-                    {% for note in notes %}
-                        <li><p>{{ note.text }}</p></li>
+                    {% for customer in customers %}
+                        <li><p>{{ customer.name }} {{ customer.firstName }}</p></li>
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>Any note</p>
+                <p>Any customer</p>
             {% endif %}
         </div>
         <div>
