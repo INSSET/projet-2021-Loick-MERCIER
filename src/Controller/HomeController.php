@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Customer;
 use App\Entity\Note;
 use App\Entity\Task;
 use Doctrine\Persistence\ManagerRegistry;
@@ -15,11 +16,11 @@ class HomeController extends AbstractController
     public function index(ManagerRegistry $doctrine): Response
     {
         if ($this->getUser()) {
-            $noteRepository = $doctrine->getRepository(Note::class);
+            $customerRepository = $doctrine->getRepository(Customer::class);
             $taskRepository = $doctrine->getRepository(Task::class);
 
             return $this->render('home.html.twig', [
-                'notes' => $noteRepository->findAll(),
+                'customers' => $customerRepository->findAll(),
                 'tasks' => $taskRepository->findAll(),
                 ]
             );
