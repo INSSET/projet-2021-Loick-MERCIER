@@ -31,7 +31,6 @@ class RegisterType extends AbstractType
                 ))]
             ])
             ->add('save', SubmitType::class)
-
         ;
     }
 }

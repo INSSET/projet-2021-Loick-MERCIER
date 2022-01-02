@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function index(ManagerRegistry $doctrine): Response
+    public function home(ManagerRegistry $doctrine): Response
     {
         if ($this->getUser()) {
             $customerRepository = $doctrine->getRepository(Customer::class);
