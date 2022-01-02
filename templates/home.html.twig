@@ -9,6 +9,7 @@
     <div>
         <div>
             <h1>Customers</h1>
+            <a href="{{ path('app_create_customer') }}">Create new</a>
             {% if customers %}
                 <ul>
                     {% for customer in customers %}
