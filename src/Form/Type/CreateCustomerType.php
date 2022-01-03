@@ -26,7 +26,7 @@ class CreateCustomerType extends AbstractType
                 'class' => Company::class,
                 'choice_label' => 'name',
             ])
-            ->add('create', SubmitType::class)
+            ->add('save', SubmitType::class)
         ;
     }
 }

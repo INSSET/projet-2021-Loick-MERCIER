@@ -21,19 +21,15 @@ class CustomerController extends AbstractController
 
         $customer = new Customer();
         $form = $this->createForm(CreateCustomerType::class, $customer);
-        // 2) handle the submit (will only happen on POST)
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // 4) save the User!
+            $customer->setName(strtoupper($customer->getName()));
+            $customer->setFirstName(ucfirst($customer->getFirstName()));
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($customer);
             $entityManager->flush();
-
-            // ... do any other work - like sending them an email, etc
-            // maybe set a "flash" success message for the user
-
-            return $this->redirectToRoute('app_home');
+            return $this->redirectToRoute('app_customer', array('id' => $customer->getId()));
         }
 
         return $this->renderForm('form.html.twig', [
@@ -43,7 +39,7 @@ class CustomerController extends AbstractController
     }
 
     #[Route('/customer/{id}', name: 'app_customer', requirements: ['id' => '\d+'])]
-    public function customer(Request $request, ManagerRegistry $doctrine, int $id): Response
+    public function customer(ManagerRegistry $doctrine, int $id): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -53,6 +49,32 @@ class CustomerController extends AbstractController
 
         return $this->render('customer/customerInformation.html.twig', [
             'customer' => $customerRepository->find($id),
+        ]);
+    }
+
+    #[Route('/customer/edit/{id}', name: 'app_edit_customer', requirements: ['id' => '\d+'])]
+    public function updateCustomer(Request $request, ManagerRegistry $doctrine, int $id): Response
+    {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $customer = $doctrine->getRepository(Customer::class)->find($id);
+
+        $form = $this->createForm(CreateCustomerType::class, $customer);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $customer->setName(strtoupper($customer->getName()));
+            $customer->setFirstName(ucfirst($customer->getFirstName()));
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->flush();
+            return $this->redirectToRoute('app_customer', array('id' => $id));
+        }
+
+        return $this->renderForm('form.html.twig', [
+            'formName' => 'Edit customer',
+            'form' => $form,
         ]);
     }
 }
