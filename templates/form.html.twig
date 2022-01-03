@@ -1,7 +1,6 @@
 {% extends 'baseLogged.html.twig' %}
 
-{% block title %}{{ formName }}{% endblock %}
-
 {% block body %}
+    <h1>{{ formName }}</h1>
     {{ form(form) }}
 {% endblock %}
