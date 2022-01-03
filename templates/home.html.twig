@@ -13,7 +13,7 @@
             {% if customers %}
                 <ul>
                     {% for customer in customers %}
-                        <li><p>{{ customer.name }} {{ customer.firstName }}</p></li>
+                        <li><a href="{{ path('app_customer', { id : customer.id }) }}">{{ customer.name }} {{ customer.firstName }}</a></li>
                     {% endfor %}
                 </ul>
             {% else %}

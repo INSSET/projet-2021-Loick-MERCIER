@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Customer;
 use App\Form\Type\CreateCustomerType;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,8 +37,22 @@ class CustomerController extends AbstractController
         }
 
         return $this->renderForm('form.html.twig', [
-            'form' => $form,
             'formName' => 'Create new customer',
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/customer/{id}', name: 'app_customer', requirements: ['id' => '\d+'])]
+    public function customer(Request $request, ManagerRegistry $doctrine, int $id): Response
+    {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $customerRepository = $doctrine->getRepository(Customer::class);
+
+        return $this->render('customer/customerInformation.html.twig', [
+            'customer' => $customerRepository->find($id),
         ]);
     }
 }

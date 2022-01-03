@@ -35,6 +35,11 @@ class Customer
     private $phoneNumber;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $email;
+
+    /**
      * @ORM\ManyToOne(targetEntity=Company::class)
      * @ORM\JoinColumn(nullable=false)
      */
@@ -95,6 +100,16 @@ class Customer
         $this->phoneNumber = $phoneNumber;
 
         return $this;
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function setEmail($email): void
+    {
+        $this->email = $email;
     }
 
     public function getCompany(): ?Company

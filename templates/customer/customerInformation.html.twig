@@ -1,0 +1,20 @@
+{% extends 'baseLogged.html.twig' %}
+
+{% block body %}
+    <p>{{ customer.name }}'s informations</p>
+    <p>Name : {{ customer.name }}</p>
+    <p>Firstname : {{ customer.firstName }}</p>
+    <p>Email :
+    {% if customer.email %}
+        {{ customer.email }}
+    {% else %}
+        Unknow
+    {% endif %}
+    </p>
+    <p>Phone number : {% if customer.phoneNumber %}
+            {{ customer.phoneNumber }}
+        {% else %}
+            Unknow
+        {% endif %}
+    </p>
+{% endblock %}
