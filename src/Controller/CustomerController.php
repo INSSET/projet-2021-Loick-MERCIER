@@ -29,7 +29,7 @@ class CustomerController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($customer);
             $entityManager->flush();
-            return $this->redirectToRoute('app_home');
+            return $this->redirectToRoute('app_customer', array('id' => $customer->getId()));
         }
 
         return $this->renderForm('form.html.twig', [
@@ -69,7 +69,7 @@ class CustomerController extends AbstractController
             $customer->setFirstName(ucfirst($customer->getFirstName()));
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
-            return $this->redirectToRoute('app_home');
+            return $this->redirectToRoute('app_customer', array('id' => $id));
         }
 
         return $this->renderForm('form.html.twig', [
