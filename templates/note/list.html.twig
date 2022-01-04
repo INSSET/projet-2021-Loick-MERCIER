@@ -1,0 +1,18 @@
+{% extends 'baseLogged.html.twig' %}
+
+{% block body %}
+    <h1>Notes list</h1>
+    {% if notes %}
+        <ul>
+            {% for note in notes %}
+                <li><p><b>{{ note.date|date('Y-m-d H:i:s') }}</b> - {{ note.text }}</p></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Any note</p>
+    {% endif %}
+    <br/>
+    <a href="{{ path('app_add_note', { id : customer.id }) }}">Add note</a>
+    <br/>
+    <a href="{{ path('app_customer', { id : customer.id }) }}">Back to customer informations</a>
+{% endblock %}

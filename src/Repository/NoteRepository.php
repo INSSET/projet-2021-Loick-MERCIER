@@ -27,6 +27,7 @@ class NoteRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('note')
             ->andWhere('note.customer = :id')
             ->setParameter('id', $id)
+            ->orderBy('note.date', 'DESC')
             ->getQuery()
             ->getResult()
         ;

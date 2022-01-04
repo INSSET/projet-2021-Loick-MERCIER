@@ -1,7 +1,7 @@
 {% extends 'baseLogged.html.twig' %}
 
 {% block body %}
-    <p>{{ customer.name }}'s informations</p>
+    <h1>Informations of {{ customer.firstName }} {{ customer.name }}</h1>
     <p>Name : {{ customer.name }}</p>
     <p>Firstname : {{ customer.firstName }}</p>
     <p>Email :
@@ -22,7 +22,10 @@
     {% if note == null %}
         <p>Any note</p>
     {% else %}
-        <p>{{ note.text}}</p>
+        <p><b>{{ note.date|date('Y-m-d H:i:s') }}</b></p>
+        <p>{{ note.text }}</p>
+        <a href="{{ path('app_notes', { id : customer.id }) }}">All notes</a>
     {% endif %}
+    <br/>
     <a href="{{ path('app_add_note', { id : customer.id }) }}">Add note</a>
 {% endblock %}
