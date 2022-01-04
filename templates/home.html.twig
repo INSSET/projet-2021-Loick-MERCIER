@@ -25,7 +25,7 @@
             {% if tasks %}
                 <ul>
                     {% for task in tasks %}
-                        <li><p>{{ task.text }}</p></li>
+                        <li><p><b>{{ task.date|date('Y-m-d') }}</b> - {{ task.text }}</p></li>
                     {% endfor %}
                 </ul>
             {% else %}

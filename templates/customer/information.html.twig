@@ -28,4 +28,16 @@
     {% endif %}
     <br/>
     <a href="{{ path('app_add_note', { id : customer.id }) }}">Add note</a>
+    <h1>Task</h1>
+    {% if tasks %}
+        <ul>
+            {% for task in tasks %}
+                <li><p><b>{{ task.date|date('Y-m-d') }}</b> - {{ task.text }}</p></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Any task</p>
+    {% endif %}
+    <br/>
+    <a href="{{ path('app_add_task', { id : customer.id }) }}">Add task</a>
 {% endblock %}

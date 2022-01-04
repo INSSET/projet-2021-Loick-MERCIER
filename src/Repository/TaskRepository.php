@@ -19,6 +19,20 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
+    /**
+     * @return Task[] Returns an array of Note objects
+     */
+    public function findByCustomerId($id)
+    {
+        return $this->createQueryBuilder('task')
+            ->andWhere('task.customer = :id')
+            ->setParameter('id', $id)
+            ->orderBy('task.date', 'DESC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     // /**
     //  * @return Task[] Returns an array of Task objects
     //  */

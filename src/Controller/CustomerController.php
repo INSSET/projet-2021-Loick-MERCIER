@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Customer;
 use App\Entity\Note;
+use App\Entity\Task;
 use App\Form\Type\CustomerType;
 use App\Form\Type\NoteType;
+use App\Form\Type\TaskType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,6 +60,7 @@ class CustomerController extends AbstractController
         $lastNote = null;
 
         $notes = $doctrine->getRepository(Note::class)->findByCustomerId($id);
+        $tasks = $doctrine->getRepository(Task::class)->findByCustomerId($id);
         if (count($notes) != 0){
             foreach ($notes as $note) {
                 if (!$lastNote || $note->getDate() > $lastNote->getDate()) {
@@ -69,6 +72,7 @@ class CustomerController extends AbstractController
         return $this->render('customer/information.html.twig', [
             'customer' => $customer,
             'note' => $lastNote,
+            'tasks' => $tasks,
         ]);
     }
 
@@ -103,7 +107,7 @@ class CustomerController extends AbstractController
     }
 
     #[Route('/customer/{id}/note/add', name: 'app_add_note', requirements: ['id' => '\d+'])]
-    public function updateNote(Request $request, ManagerRegistry $doctrine, int $id): Response
+    public function addNote(Request $request, ManagerRegistry $doctrine, int $id): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -152,6 +156,38 @@ class CustomerController extends AbstractController
         return $this->render('note/list.html.twig', [
             'customer' => $customer,
             'notes' => $notes,
+        ]);
+    }
+
+    #[Route('/customer/{id}/task/add', name: 'app_add_task', requirements: ['id' => '\d+'])]
+    public function addTask(Request $request, ManagerRegistry $doctrine, int $id): Response
+    {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $customer = $doctrine->getRepository(Customer::class)->find($id);
+
+        if (!$customer) {
+            return $this->render('customer/unknown.html.twig');
+        }
+
+        $task = new Task();
+        $form = $this->createForm(TaskType::class, $task);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $task->setCustomer($customer);
+            $task->setStatus('To do');
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($task);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_customer', array('id' => $id));
+        }
+
+        return $this->renderForm('form.html.twig', [
+            'formName' => 'Add task',
+            'form' => $form,
         ]);
     }
 }
