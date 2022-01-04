@@ -51,6 +51,10 @@ class CustomerController extends AbstractController
 
         $customer = $customerRepository->find($id);
 
+        if (!$customer) {
+            return $this->render('customer/unknown.html.twig');
+        }
+
         $lastNote = null;
 
         $notes = $doctrine->getRepository(Note::class)->findByCustomerId($id);
@@ -62,7 +66,7 @@ class CustomerController extends AbstractController
             }
         }
 
-        return $this->render('customer/customerInformation.html.twig', [
+        return $this->render('customer/information.html.twig', [
             'customer' => $customer,
             'note' => $lastNote,
         ]);
@@ -76,6 +80,10 @@ class CustomerController extends AbstractController
         }
 
         $customer = $doctrine->getRepository(Customer::class)->find($id);
+
+        if (!$customer) {
+            return $this->render('customer/unknown.html.twig');
+        }
 
         $form = $this->createForm(CustomerType::class, $customer);
         $form->handleRequest($request);
@@ -103,6 +111,10 @@ class CustomerController extends AbstractController
 
         $customer = $doctrine->getRepository(Customer::class)->find($id);
 
+        if (!$customer) {
+            return $this->render('customer/unknown.html.twig');
+        }
+
         $note = new Note();
         $form = $this->createForm(NoteType::class, $note);
         $form->handleRequest($request);
@@ -119,6 +131,27 @@ class CustomerController extends AbstractController
         return $this->renderForm('form.html.twig', [
             'formName' => 'Add note',
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/customer/{id}/notes', name: 'app_notes', requirements: ['id' => '\d+'])]
+    public function notes(Request $request, ManagerRegistry $doctrine, int $id): Response
+    {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $customer = $doctrine->getRepository(Customer::class)->find($id);
+
+        if (!$customer) {
+            return $this->render('customer/unknown.html.twig');
+        }
+
+        $notes = $doctrine->getRepository(Note::class)->findByCustomerId($id);
+
+        return $this->render('note/list.html.twig', [
+            'customer' => $customer,
+            'notes' => $notes,
         ]);
     }
 }
