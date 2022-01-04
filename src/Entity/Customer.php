@@ -45,22 +45,6 @@ class Customer
      */
     private $company;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Note::class, mappedBy="customer", orphanRemoval=true)
-     */
-    private $notes;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Task::class, mappedBy="customer", orphanRemoval=true)
-     */
-    private $tasks;
-
-    public function __construct()
-    {
-        $this->notes = new ArrayCollection();
-        $this->tasks = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -120,66 +104,6 @@ class Customer
     public function setCompany(?Company $company): self
     {
         $this->company = $company;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Note[]
-     */
-    public function getNotes(): Collection
-    {
-        return $this->notes;
-    }
-
-    public function addNote(Note $note): self
-    {
-        if (!$this->notes->contains($note)) {
-            $this->notes[] = $note;
-            $note->setCustomer($this);
-        }
-
-        return $this;
-    }
-
-    public function removeNote(Note $note): self
-    {
-        if ($this->notes->removeElement($note)) {
-            // set the owning side to null (unless already changed)
-            if ($note->getCustomer() === $this) {
-                $note->setCustomer(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Task[]
-     */
-    public function getTasks(): Collection
-    {
-        return $this->tasks;
-    }
-
-    public function addTask(Task $task): self
-    {
-        if (!$this->tasks->contains($task)) {
-            $this->tasks[] = $task;
-            $task->setCustomer($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTask(Task $task): self
-    {
-        if ($this->tasks->removeElement($task)) {
-            // set the owning side to null (unless already changed)
-            if ($task->getCustomer() === $this) {
-                $task->setCustomer(null);
-            }
-        }
 
         return $this;
     }

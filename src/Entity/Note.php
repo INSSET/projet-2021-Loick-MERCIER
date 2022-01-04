@@ -23,12 +23,12 @@ class Note
     private $text;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="bigint")
      */
     private $date;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Customer::class, inversedBy="notes")
+     * @ORM\ManyToOne(targetEntity=Customer::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private $customer;
@@ -50,12 +50,12 @@ class Note
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?int
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate(int $date): self
     {
         $this->date = $date;
 

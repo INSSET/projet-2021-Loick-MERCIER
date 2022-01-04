@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Customer;
-use App\Form\Type\CreateCustomerType;
+use App\Entity\Note;
+use App\Form\Type\CustomerType;
+use App\Form\Type\NoteType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +22,7 @@ class CustomerController extends AbstractController
         }
 
         $customer = new Customer();
-        $form = $this->createForm(CreateCustomerType::class, $customer);
+        $form = $this->createForm(CustomerType::class, $customer);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -47,8 +49,22 @@ class CustomerController extends AbstractController
 
         $customerRepository = $doctrine->getRepository(Customer::class);
 
+        $customer = $customerRepository->find($id);
+
+        $lastNote = null;
+
+        $notes = $doctrine->getRepository(Note::class)->findByCustomerId($id);
+        if (count($notes) != 0){
+            foreach ($notes as $note) {
+                if (!$lastNote || $note->getDate() > $lastNote->getDate()) {
+                    $lastNote = $note;
+                }
+            }
+        }
+
         return $this->render('customer/customerInformation.html.twig', [
-            'customer' => $customerRepository->find($id),
+            'customer' => $customer,
+            'note' => $lastNote,
         ]);
     }
 
@@ -61,7 +77,7 @@ class CustomerController extends AbstractController
 
         $customer = $doctrine->getRepository(Customer::class)->find($id);
 
-        $form = $this->createForm(CreateCustomerType::class, $customer);
+        $form = $this->createForm(CustomerType::class, $customer);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -74,6 +90,34 @@ class CustomerController extends AbstractController
 
         return $this->renderForm('form.html.twig', [
             'formName' => 'Edit customer',
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/customer/{id}/note/add', name: 'app_add_note', requirements: ['id' => '\d+'])]
+    public function updateNote(Request $request, ManagerRegistry $doctrine, int $id): Response
+    {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $customer = $doctrine->getRepository(Customer::class)->find($id);
+
+        $note = new Note();
+        $form = $this->createForm(NoteType::class, $note);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $note->setDate(time());
+            $note->setCustomer($customer);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($note);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_customer', array('id' => $id));
+        }
+
+        return $this->renderForm('form.html.twig', [
+            'formName' => 'Add note',
             'form' => $form,
         ]);
     }
