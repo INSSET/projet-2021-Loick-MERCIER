@@ -33,7 +33,7 @@ class Task
     private $status;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Customer::class, inversedBy="tasks")
+     * @ORM\ManyToOne(targetEntity=Customer::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private $customer;

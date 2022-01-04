@@ -18,4 +18,11 @@
         {% endif %}
     </p>
     <a href="{{ path('app_edit_customer', { id : customer.id }) }}">Edit</a>
+    <h1>Note</h1>
+    {% if note == null %}
+        <p>Any note</p>
+    {% else %}
+        <p>{{ note.text}}</p>
+    {% endif %}
+    <a href="{{ path('app_add_note', { id : customer.id }) }}">Add note</a>
 {% endblock %}
