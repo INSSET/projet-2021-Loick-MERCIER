@@ -3,4 +3,5 @@
 {% block body %}
     <h1>{{ formName }}</h1>
     {{ form(form) }}
+    <a href="{{ absolute_url(asset(app.request.headers.get('referer'))) }}">Back</a>
 {% endblock %}
