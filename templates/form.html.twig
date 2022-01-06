@@ -2,6 +2,9 @@
 
 {% block body %}
     <h1>{{ formName }}</h1>
+    {% if formName == 'Create new customer' %}
+        <a href="{{ path('app_create_company') }}">Create new company</a>
+    {% endif %}
     {{ form(form) }}
     <a href="{{ absolute_url(asset(app.request.headers.get('referer'))) }}">Back</a>
 {% endblock %}
