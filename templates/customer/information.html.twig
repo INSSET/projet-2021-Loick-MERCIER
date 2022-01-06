@@ -32,7 +32,10 @@
     {% if tasks %}
         <ul>
             {% for task in tasks %}
-                <li><p><b>{{ task.date|date('Y-m-d') }}</b> - {{ task.text }}</p></li>
+                <li>
+                    <p><b>{{ task.date|date('Y-m-d') }}</b> - {{ task.text }}</p>
+                    <a href="#" class="btn btn-danger delete-task" data-id="{{ task.id }}">Delete</a>
+                </li>
             {% endfor %}
         </ul>
     {% else %}
@@ -40,4 +43,8 @@
     {% endif %}
     <br/>
     <a href="{{ path('app_add_task', { id : customer.id }) }}">Add task</a>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/js/main.js"></script>
 {% endblock %}

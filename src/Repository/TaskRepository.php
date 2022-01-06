@@ -33,6 +33,19 @@ class TaskRepository extends ServiceEntityRepository
             ;
     }
 
+    /**
+     * @return Task[] Returns an array of Note objects
+     */
+    public function findActive()
+    {
+        return $this->createQueryBuilder('task')
+            ->andWhere('task.customer IS NOT NULL')
+            ->orderBy('task.date', 'DESC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     // /**
     //  * @return Task[] Returns an array of Task objects
     //  */

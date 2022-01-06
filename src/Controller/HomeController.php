@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
-    #[Route('/', name: 'app_home')]
+    #[Route('/', name: 'app_home', methods: ['GET'])]
     public function home(ManagerRegistry $doctrine): Response
     {
         if ($this->getUser()) {
@@ -21,7 +21,7 @@ class HomeController extends AbstractController
 
             return $this->render('home.html.twig', [
                 'customers' => $customerRepository->findAll(),
-                'tasks' => $taskRepository->findAll(),
+                'tasks' => $taskRepository->findActive(),
                 ]
             );
         } else {

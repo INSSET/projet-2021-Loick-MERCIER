@@ -10,13 +10,14 @@ use App\Form\Type\NoteType;
 use App\Form\Type\TaskType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CustomerController extends AbstractController
 {
-    #[Route('/customer/create', name: 'app_create_customer')]
+    #[Route('/customer/create', name: 'app_create_customer', methods: ['GET'])]
     public function createCustomer(Request $request): Response
     {
         if (!$this->getUser()) {
@@ -42,7 +43,7 @@ class CustomerController extends AbstractController
         ]);
     }
 
-    #[Route('/customer/{id}', name: 'app_customer', requirements: ['id' => '\d+'])]
+    #[Route('/customer/{id}', name: 'app_customer', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function customer(ManagerRegistry $doctrine, int $id): Response
     {
         if (!$this->getUser()) {
@@ -76,7 +77,7 @@ class CustomerController extends AbstractController
         ]);
     }
 
-    #[Route('/customer/edit/{id}', name: 'app_edit_customer', requirements: ['id' => '\d+'])]
+    #[Route('/customer/edit/{id}', name: 'app_edit_customer', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function updateCustomer(Request $request, ManagerRegistry $doctrine, int $id): Response
     {
         if (!$this->getUser()) {
@@ -106,7 +107,7 @@ class CustomerController extends AbstractController
         ]);
     }
 
-    #[Route('/customer/{id}/note/add', name: 'app_add_note', requirements: ['id' => '\d+'])]
+    #[Route('/customer/{id}/note/add', name: 'app_add_note', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function addNote(Request $request, ManagerRegistry $doctrine, int $id): Response
     {
         if (!$this->getUser()) {
@@ -138,7 +139,7 @@ class CustomerController extends AbstractController
         ]);
     }
 
-    #[Route('/customer/{id}/notes', name: 'app_notes', requirements: ['id' => '\d+'])]
+    #[Route('/customer/{id}/notes', name: 'app_notes', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function notes(Request $request, ManagerRegistry $doctrine, int $id): Response
     {
         if (!$this->getUser()) {
@@ -159,7 +160,7 @@ class CustomerController extends AbstractController
         ]);
     }
 
-    #[Route('/customer/{id}/task/add', name: 'app_add_task', requirements: ['id' => '\d+'])]
+    #[Route('/customer/{id}/task/add', name: 'app_add_task', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function addTask(Request $request, ManagerRegistry $doctrine, int $id): Response
     {
         if (!$this->getUser()) {
@@ -189,5 +190,23 @@ class CustomerController extends AbstractController
             'formName' => 'Add task',
             'form' => $form,
         ]);
+    }
+
+    #[Route('/task/{id}', name: 'task_delete', requirements: ['id' => '\d+'], methods: ['DELETE'])]
+    public function deleteAction(Request $request, int $id)
+    {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $repository = $this->getDoctrine()->getRepository(Task::class);
+        $task = $repository->find($id);
+        $customerId = $task->getCutomer();
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($task);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_customer', array('id' => $customerId));
     }
 }
